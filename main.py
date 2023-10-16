@@ -69,6 +69,7 @@ def visualize_grads(preprocessed_input, grads: np.array):
 def predict(img_path: str, device: str, pretrained: bool = True, requires_grad: bool = True):
     preprocessed_input, batch = preprocess_input(img_path, device)
     model = resnet18(pretrained=pretrained).to(device)
+    model.eval()
     if requires_grad:
         batch.requires_grad = True
         model_out = model(batch)
@@ -83,6 +84,13 @@ def predict(img_path: str, device: str, pretrained: bool = True, requires_grad: 
         saliency_map = visualize_grads(preprocessed_input, grads)
         cv2.imshow("Gradient based saliency map", cv2.hconcat([saliency_map, preprocessed_input]))
         cv2.waitKey()
+
+def export_to_onnx(img_path: str):
+    _, batch = preprocess_input(img_path, device='cpu')
+    model = resnet18(pretrained=True).to('cpu')
+    model.eval()
+
+    torch.onnx.export(model, batch, './resnet18.onnx')
 
 
 def main(seed=42):
