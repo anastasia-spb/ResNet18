@@ -1,0 +1,14 @@
+{
+    "name": "demo_env",
+    "build": {
+        "dockerfile": "Dockerfile.dev",
+        "context": "..",
+        "args": { "USER_ID": "1000" }
+    },
+    "remoteUser": "appuser",
+    "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance"
+    ],
+    "runArgs": ["--gpus", "all", "--shm-size", "32G", "-e", "WANDB_API_KEY=<your key>"]
+  }

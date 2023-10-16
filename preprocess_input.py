@@ -19,7 +19,7 @@ class ImageTransformation(object):
     input_size = 235
     crop_size = (224, 224)
 
-    def __call__(self, frame: np.array, device: str, to_rgb: bool = True):
+    def __call__(self, frame: np.array, to_rgb: bool = True):
         if to_rgb:
             frame = bgr2rgb(frame)
 
@@ -31,6 +31,6 @@ class ImageTransformation(object):
         frame = transform(frame)
         normalized_frame = normalize(np.array(frame), self.means, self.stds)
         normalized_frame = normalized_frame.transpose(2, 0, 1)
-        normalized_frame = torch.as_tensor(np.ascontiguousarray(normalized_frame), device=torch.device(device))
+        normalized_frame = torch.as_tensor(np.ascontiguousarray(normalized_frame))
 
         return frame, normalized_frame.type(torch.FloatTensor)

@@ -1,7 +1,7 @@
 from typing import Type, Union, Optional, List, Any
 
 import torch
-from torchvision.models.utils import load_state_dict_from_url
+from torch.hub import load_state_dict_from_url
 import torch.nn as nn
 
 model_urls = {
@@ -99,9 +99,13 @@ class Bottleneck(nn.Module):
 class ResNet(nn.Module):
     def __init__(self, block: Type[Union[BasicBlock, Bottleneck]], layers: List[int], num_classes: int = 1000):
         super(ResNet, self).__init__()
+        self.inplanes = 64
+        self.dilation = 1
+
+        self._norm_layer = nn.BatchNorm2d
         self.conv1 = nn.Conv2d(3, self.inplanes, kernel_size=7, stride=2, padding=3,
                                bias=False)
-        self.bn1 = nn.BatchNorm2d(self.inplanes)
+        self.bn1 = self._norm_layer(self.inplanes)
         self.relu = nn.ReLU(inplace=True)
         self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
 
@@ -172,8 +176,8 @@ def _resnet(
 ) -> ResNet:
     model = ResNet(block, layers, **kwargs)
     if pretrained:
-        state_dict = load_state_dict_from_url(model_urls[arch], progress=progress)
-        model.load_state_dict(state_dict)
+        # state_dict = load_state_dict_from_url(model_urls[arch], progress=progress)
+        model.load_state_dict(torch.load('resnet18-5c106cde.pth'))
     return model
 
 
