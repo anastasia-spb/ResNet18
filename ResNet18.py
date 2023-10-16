@@ -28,8 +28,10 @@ def conv1x1(in_planes: int, out_planes: int, stride: int = 1) -> nn.Conv2d:
 
 
 class BasicBlock(nn.Module):
+    expansion = 1
+    
     def __init__(self, in_channels: int, out_channels: int, stride: int = 1, downsample: Optional[nn.Module] = None,
-                 groups: int = 1, base_width: int = 64, dilation: int = 1):
+                 dilation: int = 1):
         super(BasicBlock, self).__init__()
         self.conv1 = conv3x3(in_channels, out_channels, stride)
         self.bn1 = nn.BatchNorm2d(out_channels)
@@ -59,7 +61,7 @@ class Bottleneck(nn.Module):
     expansion = 4
 
     def __init__(self, in_channels: int, out_channels: int, stride: int = 1, downsample: Optional[nn.Module] = None,
-                 groups: int = 1, base_width: int = 64, dilation: int = 1):
+                 dilation: int = 1):
         super(Bottleneck, self).__init__()
         self.conv1 = conv1x1(in_channels, out_channels)
         self.bn1 = nn.BatchNorm2d(out_channels)
@@ -95,8 +97,7 @@ class Bottleneck(nn.Module):
 
 
 class ResNet(nn.Module):
-    def __init__(self, block: Type[Union[BasicBlock, Bottleneck]], layers: List[int], num_classes: int = 1000,
-                 groups: int = 1, width_per_group: int = 64):
+    def __init__(self, block: Type[Union[BasicBlock, Bottleneck]], layers: List[int], num_classes: int = 1000):
         super(ResNet, self).__init__()
         self.conv1 = nn.Conv2d(3, self.inplanes, kernel_size=7, stride=2, padding=3,
                                bias=False)
@@ -136,12 +137,10 @@ class ResNet(nn.Module):
             )
 
         layers = []
-        layers.append(block(self.inplanes, planes, stride, downsample, self.groups,
-                            self.base_width, previous_dilation))
+        layers.append(block(self.inplanes, planes, stride, downsample, previous_dilation))
         self.inplanes = planes * block.expansion
         for _ in range(1, blocks):
-            layers.append(block(self.inplanes, planes, groups=self.groups,
-                                base_width=self.base_width, dilation=self.dilation))
+            layers.append(block(self.inplanes, planes, dilation=self.dilation))
 
         return nn.Sequential(*layers)
 
