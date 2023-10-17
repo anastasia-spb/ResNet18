@@ -91,4 +91,3 @@ def main(seed=42):
 
 if __name__ == "__main__":
     main()
-    # export_to_onnx(img_path = './5KQYCLPKNCCZ.jpg')

@@ -4,7 +4,7 @@
             "name": "Python: ResNet18 Demo",
             "type": "python",
             "request": "launch",
-            "program": "/workspaces/ResNet18/visualize_layers.py"
+            "program": "/workspaces/ResNet18/main.py"
         }
     ]
 }

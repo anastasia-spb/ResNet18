@@ -15,7 +15,6 @@ RUN apt-get update && apt-get install ffmpeg libsm6 libxext6  -y
 RUN pip install --upgrade pip
 RUN pip install numpy astropy opencv-python tqdm pytorch-lightning==2.0.9 wandb==0.15.12 Pillow==9.3.0
 
-RUN pip install onnxruntime
 
 WORKDIR /app
 
